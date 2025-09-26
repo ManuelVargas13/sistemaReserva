@@ -1,0 +1,248 @@
+<div class="container mt-4">
+  <!-- Header personalizado según rol -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card" [ngClass]="isAdmin() ? 'bg-gradient-admin text-white' : 'bg-gradient-primary text-white'">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-md-8">
+              @if (isAdmin()) {
+                <h2 class="mb-1">
+                  <i class="bi bi-shield-check me-2"></i>
+                  Panel de Administración
+                </h2>
+                <p class="mb-0 opacity-75">Gestiona el sistema de reservas</p>
+              } @else {
+                <h2 class="mb-1">
+                  <i class="bi bi-airplane me-2"></i>
+                  ¡Hola {{ getUserName() }}!
+                </h2>
+                <p class="mb-0 opacity-75">¿Listo para tu próxima aventura?</p>
+              }
+            </div>
+            <div class="col-md-4 text-md-end">
+              @if (isAdmin()) {
+                <i class="bi bi-gear fs-1 opacity-50"></i>
+              } @else {
+                <i class="bi bi-airplane fs-1 opacity-50"></i>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenido para ADMINISTRADORES -->
+  @if (isAdmin()) {
+    <div class="row">
+      <!-- Tarjeta de Gestión de Vuelos -->
+      <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card h-100 card-hover border-primary">
+          <div class="card-body text-center">
+            <i class="bi bi-airplane-engines text-primary fs-1 mb-3"></i>
+            <h5>Gestión de Vuelos</h5>
+            <p class="text-muted mb-3">Administra vuelos y asientos</p>
+            <a href="/admin/flights" class="btn btn-primary">
+              <i class="bi bi-airplane me-2"></i>Gestionar
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjeta de Reportes -->
+      <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card h-100 card-hover border-success">
+          <div class="card-body text-center">
+            <i class="bi bi-graph-up text-success fs-1 mb-3"></i>
+            <h5>Reportes</h5>
+            <p class="text-muted mb-3">Estadísticas y ocupación</p>
+            <a href="/admin/reports" class="btn btn-success">
+              <i class="bi bi-bar-chart me-2"></i>Ver Reportes
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjeta de Usuarios -->
+      <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card h-100 card-hover border-warning">
+          <div class="card-body text-center">
+            <i class="bi bi-people text-warning fs-1 mb-3"></i>
+            <h5>Usuarios</h5>
+            <p class="text-muted mb-3">Gestión de usuarios</p>
+            <button class="btn btn-warning" disabled>
+              <i class="bi bi-person-gear me-2"></i>Próximamente
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjeta de Configuración -->
+      <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card h-100 card-hover border-info">
+          <div class="card-body text-center">
+            <i class="bi bi-gear text-info fs-1 mb-3"></i>
+            <h5>Configuración</h5>
+            <p class="text-muted mb-3">Ajustes del sistema</p>
+            <button class="btn btn-info" disabled>
+              <i class="bi bi-sliders me-2"></i>Próximamente
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estadísticas rápidas para admin -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="bi bi-speedometer2 me-2"></i>
+              Resumen del Sistema
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="row text-center">
+              <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card">
+                  <i class="bi bi-airplane text-primary fs-2"></i>
+                  <h4 class="mt-2">{{ adminStats().totalFlights }}</h4>
+                  <p class="text-muted mb-0">Total Vuelos</p>
+                </div>
+              </div>
+              <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card">
+                  <i class="bi bi-calendar-check text-success fs-2"></i>
+                  <h4 class="mt-2">{{ adminStats().totalBookings }}</h4>
+                  <p class="text-muted mb-0">Total Reservas</p>
+                </div>
+              </div>
+              <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card">
+                  <i class="bi bi-people text-warning fs-2"></i>
+                  <h4 class="mt-2">{{ adminStats().totalUsers }}</h4>
+                  <p class="text-muted mb-0">Usuarios Registrados</p>
+                </div>
+              </div>
+              <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card">
+                  <span class="fs-1 mb-2">S/</span>
+                  <h4 class="mt-2">{{ adminStats().totalRevenue | currency:'PEN':'symbol':'1.0-0' }}</h4>
+                  <p class="text-muted mb-0">Ingresos Totales</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  } @else {
+    <!-- Contenido para USUARIOS NORMALES -->
+    <div class="row">
+      <!-- Tarjeta de Buscar Vuelos -->
+      <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card h-100 card-hover border-primary">
+          <div class="card-body text-center">
+            <i class="bi bi-search text-primary fs-1 mb-3"></i>
+            <h5>Buscar Vuelos</h5>
+            <p class="text-muted mb-3">Encuentra el vuelo perfecto</p>
+            <a href="/flights/search" class="btn btn-primary">
+              <i class="bi bi-search me-2"></i>Buscar
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjeta de Mis Reservas -->
+      <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card h-100 card-hover border-success">
+          <div class="card-body text-center">
+            <i class="bi bi-calendar-check text-success fs-1 mb-3"></i>
+            <h5>Mis Reservas</h5>
+            <p class="text-muted mb-3">{{ userStats().bookingsCount }} reserva(s) activa(s)</p>
+            <a href="/bookings" class="btn btn-success">
+              <i class="bi bi-list me-2"></i>Ver Reservas
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjeta de Destinos Populares -->
+      <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card h-100 card-hover border-warning">
+          <div class="card-body text-center">
+            <i class="bi bi-star text-warning fs-1 mb-3"></i>
+            <h5>Destinos Populares</h5>
+            <p class="text-muted mb-3">Descubre nuevos lugares</p>
+            <button class="btn btn-warning" (click)="showPopularDestinations()">
+              <i class="bi bi-globe me-2"></i>Explorar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjeta de Mi Perfil -->
+      <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card h-100 card-hover border-info">
+          <div class="card-body text-center">
+            <i class="bi bi-person-gear text-info fs-1 mb-3"></i>
+            <h5>Mi Perfil</h5>
+            <p class="text-muted mb-3">Gestiona tu información</p>
+            <button class="btn btn-info" (click)="editProfile()">
+              <i class="bi bi-pencil me-2"></i>Editar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estadísticas personales para usuarios -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="bi bi-person-circle me-2"></i>
+              Mi Actividad
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="row text-center">
+              <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card">
+                  <i class="bi bi-airplane-engines text-primary fs-2"></i>
+                  <h4 class="mt-2">{{ userStats().totalFlights }}</h4>
+                  <p class="text-muted mb-0">Vuelos Realizados</p>
+                </div>
+              </div>
+              <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card">
+                  <i class="bi bi-geo-alt text-success fs-2"></i>
+                  <h4 class="mt-2">{{ userStats().uniqueDestinations }}</h4>
+                  <p class="text-muted mb-0">Destinos Visitados</p>
+                </div>
+              </div>
+              <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card">
+                  <span class="fs-1 mb-2">S/</span>
+                  <h4 class="mt-2">{{ userStats().totalSpent }}</h4>
+                  <p class="text-muted mb-0">Total Gastado</p>
+                </div>
+              </div>
+              <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card">
+                  <i class="bi bi-calendar-check text-info fs-2"></i>
+                  <h4 class="mt-2">{{ userStats().upcomingFlights }}</h4>
+                  <p class="text-muted mb-0">Próximos Vuelos</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

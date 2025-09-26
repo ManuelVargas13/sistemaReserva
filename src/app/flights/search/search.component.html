@@ -1,0 +1,131 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="card shadow mb-4">
+        <div class="card-body">
+          <form [formGroup]="searchForm" (ngSubmit)="search()">
+            <h2 class="card-title text-center mb-4">Buscar Vuelos</h2>
+            <div class="row g-3">
+              <div class="col-md-3">
+                <label class="form-label">Origen</label>
+                <input type="text" class="form-control" formControlName="origin"
+                  [class.is-invalid]="origin?.invalid && origin?.touched"
+                  placeholder="Ej: Lima, Trujillo, Bogotá..."
+                  autocomplete="off">
+                <div class="invalid-feedback" *ngIf="origin?.touched && origin?.errors">
+                  <span *ngIf="origin?.errors?.['required']">El origen es requerido</span>
+                  <span *ngIf="origin?.errors?.['minlength']">Mínimo 2 caracteres</span>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Destino</label>
+                <input type="text" class="form-control" formControlName="destination"
+                  [class.is-invalid]="destination?.invalid && destination?.touched"
+                  placeholder="Ej: Madrid, Lima, Nueva York..."
+                  autocomplete="off">
+                <div class="invalid-feedback" *ngIf="destination?.touched && destination?.errors">
+                  <span *ngIf="destination?.errors?.['required']">El destino es requerido</span>
+                  <span *ngIf="destination?.errors?.['minlength']">Mínimo 2 caracteres</span>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <label class="form-label">Fecha (opcional)</label>
+                <input type="date" class="form-control" formControlName="date">
+              </div>
+              <div class="col-md-2">
+                <label class="form-label">Pasajeros</label>
+                <input type="number" class="form-control" formControlName="passengers" min="1" max="10">
+              </div>
+              <div class="col-md-2">
+                <label class="form-label">Clase</label>
+                <select class="form-select" formControlName="class">
+                  <option *ngFor="let c of classes" [value]="c.value">{{ c.label }}</option>
+                </select>
+              </div>
+            </div>
+            <div class="d-grid gap-2 mt-4">
+              <button type="submit" class="btn btn-primary" [disabled]="loading()">
+                <ng-container *ngIf="loading(); else searchButton">
+                  <span class="spinner-border spinner-border-sm me-2"></span>
+                  Buscando...
+                </ng-container>
+                <ng-template #searchButton>
+                  🔍 Buscar Vuelos
+                </ng-template>
+              </button>
+            </div>
+            <div *ngIf="error()" class="alert alert-danger mt-3">{{ error() }}</div>
+          </form>
+        </div>
+      </div>
+      <div *ngIf="flights().length" class="card shadow">
+        <div class="card-body">
+          <h3 class="card-title mb-3">
+            <i class="bi bi-airplane-fill text-primary me-2"></i>
+            {{ flights().length }} vuelo{{ flights().length !== 1 ? 's' : '' }} encontrado{{ flights().length !== 1 ? 's' : '' }}
+          </h3>
+
+          <div *ngFor="let flight of flights()" class="mb-3 p-3 border rounded bg-light">
+            <div class="row align-items-center">
+              <div class="col-md-8">
+                <div class="d-flex align-items-center mb-2">
+                  <span class="badge bg-primary me-2">{{ flight.flightNumber }}</span>
+                  <strong class="text-dark">{{ flight.origin }} → {{ flight.destination }}</strong>
+                </div>
+
+                <div class="row g-2 text-sm">
+                  <div class="col-md-6">
+                    <small class="text-muted">
+                      <i class="bi bi-calendar3 me-1"></i>
+                      Salida: {{ flight.departure | date:'medium':'es' }}
+                    </small>
+                  </div>
+                  <div class="col-md-6">
+                    <small class="text-muted">
+                      <i class="bi bi-calendar3 me-1"></i>
+                      Llegada: {{ flight.arrival | date:'medium':'es' }}
+                    </small>
+                  </div>
+                  <div class="col-md-6">
+                    <small class="text-muted">
+                      <i class="bi bi-building me-1"></i>
+                      Aerolínea: {{ getAirlineName(flight.airline) }}
+                    </small>
+                  </div>
+                  <div class="col-md-6">
+                    <small class="text-muted">
+                      <i class="bi bi-people me-1"></i>
+                      Asientos: {{ flight.availableSeats || flight.totalSeats || 'N/A' }}
+                    </small>
+                  </div>
+                </div>
+
+                <div class="mt-2">
+                  <span class="fs-5 fw-bold text-success">
+                    S/{{ getFlightPrice(flight, searchForm.value.class || 'economy') | number:'1.0-0' }}
+                  </span>
+                  <small class="text-muted ms-2">({{ (searchForm.value.class || 'economy') === 'business' ? 'Clase Ejecutiva' : 'Clase Económica' }})</small>
+                </div>
+              </div>
+
+              <div class="col-md-4 text-end">
+                <button class="btn btn-success btn-lg" (click)="selectFlight(flight)">
+                  <i class="bi bi-check-circle me-2"></i>
+                  Seleccionar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="hasSearched() && flights().length === 0 && !loading()" class="alert alert-info text-center">
+        <i class="bi bi-info-circle-fill fs-2 text-info mb-2"></i>
+        <h5>Sin resultados</h5>
+        <p class="mb-1">No se encontraron vuelos con los criterios especificados</p>
+        <small class="text-muted">
+          💡 Intenta con ciudades diferentes o sin especificar fecha
+        </small>
+      </div>
+    </div>
+  </div>
+</div>

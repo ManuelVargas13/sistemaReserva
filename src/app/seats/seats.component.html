@@ -1,0 +1,300 @@
+<div class="container mt-4">
+  @if (loading()) {
+    <div class="text-center my-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Procesando reserva...</span>
+      </div>
+    </div>
+  } @else {
+    <div class="row">
+      <!-- Panel de selección de asientos -->
+      <div class="col-lg-8">
+        <div class="card">
+          <div class="card-header bg-primary text-white">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-airplane fs-4 me-2"></i>
+              <h5 class="mb-0">Seleccionar Asientos</h5>
+            </div>
+          </div>
+          <div class="card-body">
+            @if (flight()) {
+              <!-- Información del vuelo -->
+              <div class="flight-info bg-light p-3 rounded mb-4">
+                <div class="row">
+                  <div class="col-md-6">
+                    <h6 class="mb-1">
+                      <i class="bi bi-airplane-fill text-primary"></i>
+                      {{ flight()?.flightNumber }}
+                    </h6>
+                    <p class="mb-0">
+                      <strong>{{ flight()?.origin }}</strong> → <strong>{{ flight()?.destination }}</strong>
+                    </p>
+                  </div>
+                  <div class="col-md-6">
+                    <small class="text-muted">Salida:</small>
+                    <p class="mb-0">{{ flight()?.departure | date:'medium' }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Selector de clase -->
+              <div class="class-selector mb-4">
+                <h6>Selecciona la clase:</h6>
+                <div class="btn-group w-100" role="group">
+                  <input type="radio" class="btn-check" id="economy" [value]="'economy'"
+                         [(ngModel)]="seatClass" name="seatClass">
+                  <label class="btn btn-outline-primary" for="economy">
+                    <i class="bi bi-circle"></i> Económica - {{ flight()?.economyPrice | currency:'PEN':'symbol':'1.0-0' }}
+                  </label>
+
+                  <input type="radio" class="btn-check" id="business" [value]="'business'"
+                         [(ngModel)]="seatClass" name="seatClass">
+                  <label class="btn btn-outline-success" for="business">
+                    <i class="bi bi-star-fill"></i> Ejecutiva - {{ flight()?.businessPrice | currency:'PEN':'symbol':'1.0-0' }}
+                  </label>
+                </div>
+              </div>
+
+              <!-- Mapa de asientos -->
+              <div class="airplane-layout">
+                <div class="airplane-header text-center mb-3">
+                  <i class="bi bi-airplane fs-2 text-primary"></i>
+                  <p class="mb-0 text-muted">Frente del avión</p>
+                </div>
+
+                <div class="seat-grid">
+                  <!-- Filas de Ejecutiva (1-5) -->
+                  <div class="business-section">
+                    <h6 class="section-title text-success">
+                      <i class="bi bi-star-fill"></i> Clase Ejecutiva
+                    </h6>
+                    @for (row of getBusinessRows(); track row) {
+                      <div class="seat-row">
+                        <span class="row-number">{{ row }}</span>
+                        @for (seat of getSeatsInRow(row, 'business'); track seat) {
+                          <button
+                            class="seat-btn business"
+                            [ngClass]="getSeatClass(seat)"
+                            (click)="selectSeat(seat)"
+                            [disabled]="getSeatStatus(seat) === 'occupied' || seatClass() !== 'business'"
+                            [title]="getSeatTooltip(seat)">
+                            {{ seat }}
+                          </button>
+                        }
+                        <div class="aisle"></div>
+                        @for (seat of getSeatsInRow(row, 'business', 'right'); track seat) {
+                          <button
+                            class="seat-btn business"
+                            [ngClass]="getSeatClass(seat)"
+                            (click)="selectSeat(seat)"
+                            [disabled]="getSeatStatus(seat) === 'occupied' || seatClass() !== 'business'"
+                            [title]="getSeatTooltip(seat)">
+                            {{ seat }}
+                          </button>
+                        }
+                      </div>
+                    }
+                  </div>
+
+                  <!-- Separador -->
+                  <div class="section-divider"></div>
+
+                  <!-- Filas de Económica (6-30) -->
+                  <div class="economy-section">
+                    <h6 class="section-title text-primary">
+                      <i class="bi bi-circle"></i> Clase Económica
+                    </h6>
+                    @for (row of getEconomyRows(); track row) {
+                      <div class="seat-row">
+                        <span class="row-number">{{ row }}</span>
+                        @for (seat of getSeatsInRow(row, 'economy'); track seat) {
+                          <button
+                            class="seat-btn economy"
+                            [ngClass]="getSeatClass(seat)"
+                            (click)="selectSeat(seat)"
+                            [disabled]="getSeatStatus(seat) === 'occupied' || seatClass() !== 'economy'"
+                            [title]="getSeatTooltip(seat)">
+                            {{ seat }}
+                          </button>
+                        }
+                        <div class="aisle"></div>
+                        @for (seat of getSeatsInRow(row, 'economy', 'right'); track seat) {
+                          <button
+                            class="seat-btn economy"
+                            [ngClass]="getSeatClass(seat)"
+                            (click)="selectSeat(seat)"
+                            [disabled]="getSeatStatus(seat) === 'occupied' || seatClass() !== 'economy'"
+                            [title]="getSeatTooltip(seat)">
+                            {{ seat }}
+                          </button>
+                        }
+                      </div>
+                    }
+                  </div>
+                </div>
+
+                <!-- Leyenda -->
+                <div class="seat-legend mt-4">
+                  <div class="row text-center">
+                    <div class="col-3">
+                      <span class="legend-item">
+                        <button class="seat-btn available mini"></button>
+                        <small>Disponible</small>
+                      </span>
+                    </div>
+                    <div class="col-3">
+                      <span class="legend-item">
+                        <button class="seat-btn selected mini"></button>
+                        <small>Seleccionado</small>
+                      </span>
+                    </div>
+                    <div class="col-3">
+                      <span class="legend-item">
+                        <button class="seat-btn occupied mini"></button>
+                        <small>Ocupado</small>
+                      </span>
+                    </div>
+                    <div class="col-3">
+                      <span class="legend-item">
+                        <button class="seat-btn disabled mini"></button>
+                        <small>No disponible</small>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            } @else {
+              <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Cargando vuelo...</span>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel de resumen -->
+      <div class="col-lg-4">
+        <div class="card sticky-top">
+          <div class="card-header bg-success text-white">
+            <h6 class="mb-0">
+              <i class="bi bi-check-circle"></i> Resumen de Reserva
+            </h6>
+          </div>
+          <div class="card-body">
+            @if (flight()) {
+              <!-- Información del vuelo -->
+              <div class="flight-summary mb-3">
+                <h6>{{ flight()?.flightNumber }}</h6>
+                <p class="mb-1">
+                  <i class="bi bi-geo-alt"></i>
+                  {{ flight()?.origin }} → {{ flight()?.destination }}
+                </p>
+                <p class="mb-1">
+                  <i class="bi bi-calendar"></i>
+                  {{ flight()?.departure | date:'short' }}
+                </p>
+                <p class="mb-0">
+                  <i class="bi bi-airplane"></i>
+                  {{ flight() ? getAirlineName(flight()!.airline) : 'N/A' }}
+                </p>
+              </div>
+
+              <hr>
+
+              <!-- Pasajeros -->
+              <div class="passengers-info mb-3">
+                <h6>Pasajeros ({{ passengers().length }})</h6>
+                @for (passenger of passengers(); track $index) {
+                  <div class="passenger-item">
+                    <small>
+                      <i class="bi bi-person"></i>
+                      {{ passenger.firstName }} {{ passenger.lastName }}
+                    </small>
+                  </div>
+                }
+              </div>
+
+              <!-- Clase seleccionada -->
+              <div class="class-info mb-3">
+                <h6>Clase:
+                  @if (seatClass() === 'business') {
+                    <span class="badge bg-success">
+                      <i class="bi bi-star-fill"></i> Ejecutiva
+                    </span>
+                  } @else {
+                    <span class="badge bg-primary">
+                      <i class="bi bi-circle"></i> Económica
+                    </span>
+                  }
+                </h6>
+                <p class="mb-0">
+                  Precio por persona:
+                  <strong>
+                    {{ (seatClass() === 'business' ? flight()?.businessPrice : flight()?.economyPrice) | currency:'PEN':'symbol':'1.0-0' }}
+                  </strong>
+                </p>
+              </div>
+
+              <!-- Asientos seleccionados -->
+              <div class="selected-seats mb-3">
+                <h6>Asientos Seleccionados:</h6>
+                @if (selectedSeats().length > 0) {
+                  <div class="seats-list">
+                    @for (seat of selectedSeats(); track seat) {
+                      <span class="badge bg-primary me-1 mb-1">{{ seat }}</span>
+                    }
+                  </div>
+                  <small class="text-muted">
+                    {{ selectedSeats().length }} de {{ passengers().length }} asientos seleccionados
+                  </small>
+                } @else {
+                  <p class="text-muted mb-0">
+                    <i class="bi bi-arrow-left"></i>
+                    Selecciona {{ passengers().length }} asiento(s)
+                  </p>
+                }
+              </div>
+
+              <!-- Total -->
+              <div class="total-price mb-3">
+                <hr>
+                <h5>
+                  Total:
+                  <span class="text-success">
+                    {{ getTotalPrice() | currency:'PEN':'symbol':'1.0-0' }}
+                  </span>
+                </h5>
+              </div>
+
+              <!-- Botones de acción -->
+              <div class="action-buttons">
+                @if (selectedSeats().length === passengers().length) {
+                  <button
+                    class="btn btn-success w-100 mb-2"
+                    (click)="confirmReservation()"
+                    [disabled]="loading()">
+                    @if (loading()) {
+                      <span class="spinner-border spinner-border-sm me-2"></span>
+                    }
+                    <i class="bi bi-check-circle"></i> Confirmar Reserva
+                  </button>
+                } @else {
+                  <button class="btn btn-outline-success w-100 mb-2" disabled>
+                    <i class="bi bi-exclamation-circle"></i>
+                    Selecciona {{ passengers().length - selectedSeats().length }} asiento(s) más
+                  </button>
+                }
+
+                <button class="btn btn-outline-secondary w-100" (click)="goBack()">
+                  <i class="bi bi-arrow-left"></i> Volver a Búsqueda
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

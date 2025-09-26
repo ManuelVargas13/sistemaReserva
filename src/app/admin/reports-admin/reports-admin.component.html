@@ -1,0 +1,147 @@
+<div class="container mt-4">
+  <!-- Header -->
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <div class="d-flex align-items-center">
+      <i class="bi bi-graph-up fs-2 text-primary me-2"></i>
+      <h2 class="mb-0 fw-bold text-primary">Reportes de Administración</h2>
+    </div>
+    <button class="btn btn-outline-primary" (click)="refreshReports()">
+      <i class="bi bi-arrow-clockwise"></i> Actualizar
+    </button>
+  </div>
+
+  @if (loading()) {
+    <div class="text-center my-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando reportes...</span>
+      </div>
+    </div>
+  } @else {
+    <!-- Estadísticas generales -->
+    <div class="row mb-4">
+      <div class="col-md-3 mb-3">
+        <div class="card text-center bg-primary text-white h-100">
+          <div class="card-body">
+            <i class="bi bi-airplane fs-1 mb-2"></i>
+            <h3>{{ reportData().totalFlights }}</h3>
+            <p class="mb-0">Total Vuelos</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="card text-center bg-success text-white h-100">
+          <div class="card-body">
+            <i class="bi bi-ticket-perforated fs-1 mb-2"></i>
+            <h3>{{ reportData().totalBookings }}</h3>
+            <p class="mb-0">Total Reservas</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="card text-center bg-info text-white h-100">
+          <div class="card-body"><span class="fs-1 mb-2">S/</span>
+            <h3>{{ reportData().totalRevenue | currency:'PEN':'symbol':'1.0-0' }}</h3>
+            <p class="mb-0">Ingresos Totales</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="card text-center bg-warning text-white h-100">
+          <div class="card-body">
+            <i class="bi bi-percent fs-1 mb-2"></i>
+            <h3>{{ reportData().occupancyRate }}%</h3>
+            <p class="mb-0">Ocupación Promedio</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla de ocupación por vuelo -->
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        <i class="bi bi-bar-chart"></i> Ocupación por Vuelo
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table id="reportsTable" class="table table-hover mb-0 w-100">
+            <thead class="table-dark">
+              <tr>
+                <th>Vuelo</th>
+                <th>Ruta</th>
+                <th>Aerolínea</th>
+                <th>Asientos</th>
+                <th>% Ocupación</th>
+                <th>Ingresos</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (flight of flightOccupancy(); track flight.id) {
+                <tr>
+                  <td><strong>{{ flight.flightNumber }}</strong></td>
+                  <td>{{ flight.origin }} → {{ flight.destination }}</td>
+                  <td>{{ flight.airline }}</td>
+                  <td>
+                    <small>
+                      <strong>Total:</strong> {{ flight.totalSeats }}<br>
+                      <strong>Ocupados:</strong> {{ flight.occupiedSeats }}
+                    </small>
+                  </td>
+                  <td>
+                    <div class="progress mb-1" style="height: 20px;">
+                      <div class="progress-bar text-dark fw-bold"
+                           [style.width.%]="flight.occupancyPercentage"
+                           [ngClass]="getOccupancyColor(flight.occupancyPercentage)">
+                        {{ flight.occupancyPercentage }}%
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <strong class="text-success">
+                      {{ flight.revenue | currency:'PEN':'symbol':'1.0-0' }}
+                    </strong>
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="6" class="text-center py-4">
+                    <i class="bi bi-inbox fs-3 text-muted"></i><br>
+                    No hay datos de ocupación disponibles
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ingresos mensuales -->
+    <div class="card">
+      <div class="card-header bg-success text-white">
+        <i class="bi bi-calendar-month"></i> Ingresos Mensuales
+      </div>
+      <div class="card-body">
+        @if (monthlyRevenue().length > 0) {
+          <div class="row">
+            @for (month of monthlyRevenue(); track month.month) {
+              <div class="col-md-4 mb-3">
+                <div class="card border-success">
+                  <div class="card-body text-center">
+                    <h6 class="card-title">{{ month.month }}</h6>
+                    <h4 class="text-success">{{ month.revenue | currency:'PEN':'symbol':'1.0-0' }}</h4>
+                    <small class="text-muted">{{ month.bookings }} reservas</small>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="text-center py-4">
+            <i class="bi bi-calendar-x fs-3 text-muted"></i><br>
+            No hay datos de ingresos mensuales
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

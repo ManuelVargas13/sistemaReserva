@@ -1,0 +1,363 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "username": "edwin",
+      "password": "123456",
+      "name": "Edwin Fidel",
+      "email": "edwin@example.com",
+      "role": "customer",
+      "document": "71234567"
+    },
+    {
+      "id": "2",
+      "username": "ana",
+      "password": "654321",
+      "name": "Ana Torres",
+      "email": "ana@example.com",
+      "role": "customer",
+      "document": "65432187"
+    },
+    {
+      "id": "3",
+      "username": "admin",
+      "password": "admin123",
+      "name": "Administrador",
+      "email": "admin@example.com",
+      "role": "admin"
+    },
+    {
+      "id": "3815",
+      "name": "MANUEL VARGAS AZAÑERO",
+      "email": "mvargas@nttdata.com",
+      "username": "manuel",
+      "password": "manuel123",
+      "role": "customer"
+    },
+    {
+      "id": "e57c",
+      "name": "RODOLFO",
+      "email": "rodolfo@nttdata.com",
+      "username": "manuelv",
+      "password": "123456",
+      "role": "customer",
+      "document": "72883748"
+    }
+  ],
+  "flights": [
+    {
+      "id": "1",
+      "flightNumber": "LA123",
+      "origin": "Lima",
+      "destination": "Madrid",
+      "departure": "2025-12-15T08:00:00",
+      "arrival": "2025-12-15T18:00:00",
+      "airline": "301",
+      "economyPrice": 800,
+      "businessPrice": 2000,
+      "totalSeats": 180,
+      "availableSeats": 176
+    },
+    {
+      "id": "2",
+      "flightNumber": "AV456",
+      "origin": "Bogotá",
+      "destination": "Nueva York",
+      "departure": "2025-12-20T06:30:00",
+      "arrival": "2025-12-20T14:00:00",
+      "airline": "MT1",
+      "economyPrice": 600,
+      "businessPrice": 1500,
+      "totalSeats": 200,
+      "availableSeats": 200
+    },
+    {
+      "id": "3",
+      "flightNumber": "LI2334",
+      "origin": "Trujillo",
+      "destination": "LIMA",
+      "departure": "2025-09-30T23:22",
+      "arrival": "2025-09-30T05:28",
+      "airline": "bgnyzktr",
+      "totalSeats": 50,
+      "economyPrice": 100,
+      "businessPrice": 200,
+      "availableSeats": 50
+    },
+    {
+      "id": "4",
+      "flightNumber": "TR456",
+      "origin": "Trujillo",
+      "destination": "Lima",
+      "departure": "2025-09-30T01:50",
+      "arrival": "2025-09-30T10:58",
+      "airline": "301",
+      "totalSeats": 20,
+      "economyPrice": 100,
+      "businessPrice": 200,
+      "availableSeats": 20
+    },
+    {
+      "id": "5",
+      "flightNumber": "LI8585",
+      "origin": "LIMA",
+      "destination": "TRUJILLO",
+      "departure": "2025-09-24T23:52",
+      "arrival": "2025-09-24T05:58",
+      "airline": "bgnyzktr",
+      "totalSeats": 20,
+      "economyPrice": 100,
+      "businessPrice": 200,
+      "availableSeats": 20
+    }
+  ],
+  "bookings": [
+    {
+      "id": "201",
+      "userId": "1",
+      "flightId": "1",
+      "seats": [
+        "E1"
+      ],
+      "class": "economy",
+      "passengers": [
+        {
+          "firstName": "Edwin",
+          "lastName": "Fidel",
+          "documentType": "DNI",
+          "documentNumber": "71234567"
+        }
+      ],
+      "bookingDate": "2025-10-01T00:00:00.000Z",
+      "status": "confirmed"
+    },
+    {
+      "id": "110d",
+      "userId": "3",
+      "flightId": "1",
+      "seats": [
+        "E2"
+      ],
+      "class": "economy",
+      "passengers": [
+        {
+          "name": "MANUEL VARGAS",
+          "document": "71883851",
+          "age": 27
+        }
+      ],
+      "bookingDate": "2025-09-22T14:49:22.849Z",
+      "status": "cancelled"
+    },
+    {
+      "id": "e285",
+      "userId": "3",
+      "flightId": "1",
+      "seats": [
+        "B1"
+      ],
+      "class": "business",
+      "passengers": [
+        {
+          "name": "PRUEBA",
+          "document": "78996543",
+          "age": 28
+        }
+      ],
+      "bookingDate": "2025-09-22T15:02:17.050Z",
+      "status": "cancelled"
+    },
+    {
+      "id": "6f7a",
+      "userId": "3",
+      "flightId": "1",
+      "seats": [
+        "E3"
+      ],
+      "class": "economy",
+      "passengers": [
+        {
+          "name": "MANUEL VARGAS",
+          "document": "7688372",
+          "age": 27
+        }
+      ],
+      "bookingDate": "2025-09-22T17:01:36.521Z",
+      "status": "confirmed"
+    },
+    {
+      "id": "4936",
+      "userId": "3",
+      "flightId": "1",
+      "seats": [
+        "E7",
+        "E8",
+        "E9",
+        "E10",
+        "E11"
+      ],
+      "class": "economy",
+      "passengers": [
+        {
+          "name": "XD",
+          "document": "71883852",
+          "age": 27
+        },
+        {
+          "name": "XD",
+          "document": "73647373",
+          "age": 27
+        },
+        {
+          "name": "XD",
+          "document": "737237467",
+          "age": 27
+        },
+        {
+          "name": "XD",
+          "document": "6346347",
+          "age": 27
+        },
+        {
+          "name": "HDFHJDFH",
+          "document": "74838382",
+          "age": 27
+        }
+      ],
+      "bookingDate": "2025-09-22T17:27:23.560Z",
+      "status": "confirmed"
+    },
+    {
+      "id": "ffc9",
+      "userId": "2",
+      "flightId": "1",
+      "seats": [
+        "E139"
+      ],
+      "class": "economy",
+      "passengers": [
+        {
+          "name": "Manuel",
+          "document": "75848584",
+          "age": 27
+        }
+      ],
+      "bookingDate": "2025-09-22T23:13:47.620Z",
+      "status": "confirmed"
+    },
+    {
+      "id": "5c34",
+      "userId": "2",
+      "flightId": "1",
+      "seats": [
+        "B13",
+        "B14"
+      ],
+      "class": "business",
+      "passengers": [
+        {
+          "name": "PRUEBA",
+          "document": "78773627",
+          "age": 28
+        },
+        {
+          "name": "PRUEBA 2",
+          "document": "73884736",
+          "age": 28
+        }
+      ],
+      "bookingDate": "2025-09-25T02:53:12.346Z",
+      "status": "confirmed"
+    },
+    {
+      "id": "e76f",
+      "userId": "3",
+      "flightId": "2",
+      "seats": [
+        "E1"
+      ],
+      "class": "economy",
+      "passengers": [
+        {
+          "name": "RODOLFO MANUEL VARGAS AZAÑERO",
+          "document": "71883747",
+          "age": 27
+        }
+      ],
+      "bookingDate": "2025-09-25T04:21:17.008Z",
+      "status": "confirmed"
+    },
+    {
+      "id": "487f",
+      "userId": "3",
+      "flightId": "1",
+      "seats": [
+        "E97"
+      ],
+      "class": "economy",
+      "passengers": [
+        {
+          "name": "RODOLFO MANUEL VARGAS",
+          "document": "71882738",
+          "age": 27
+        }
+      ],
+      "bookingDate": "2025-09-26T04:58:47.420Z",
+      "status": "confirmed"
+    }
+  ],
+  "airlines": [
+    {
+      "id": "301",
+      "name": "Latam",
+      "code": "LA"
+    },
+    {
+      "id": "302",
+      "name": "Avianca",
+      "code": "AV"
+    },
+    {
+      "id": "bgnyzktr",
+      "name": "SKY",
+      "code": "SKY"
+    },
+    {
+      "id": "9wx1qzkn",
+      "name": "TOYOTA",
+      "code": "TOY"
+    },
+    {
+      "id": "MT1",
+      "name": "METROPOLITANA",
+      "code": "MT1"
+    },
+    {
+      "id": "PRU",
+      "name": "PRUEBA",
+      "code": "PRU"
+    }
+  ],
+  "paymentMethods": [
+    {
+      "id": "1",
+      "name": "Tarjeta de Crédito"
+    },
+    {
+      "id": "2",
+      "name": "Tarjeta de Débito"
+    },
+    {
+      "id": "3",
+      "name": "PayPal"
+    },
+    {
+      "id": "4",
+      "name": "Yape"
+    },
+    {
+      "id": "5",
+      "name": "Plin"
+    }
+  ]
+}

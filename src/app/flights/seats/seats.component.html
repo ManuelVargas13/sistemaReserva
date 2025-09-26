@@ -1,0 +1,172 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="card shadow mb-4" *ngIf="flight()">
+        <div class="card-body">
+          <h2 class="card-title text-center mb-4">Selecciona tu asiento</h2>
+
+          <!-- Información del vuelo -->
+          <div class="flight-info mb-4">
+            <strong>{{ flight()?.flightNumber }}</strong> - {{ flight()?.origin }} → {{ flight()?.destination }}<br>
+            Salida: {{ flight()?.departure | date:'short' }}<br>
+            Aerolínea: {{ flight()?.airline ? getAirlineName(flight()!.airline) : 'N/A' }}<br>
+
+            <!-- Selector de clase -->
+            <div class="row mt-3">
+              <div class="col-md-4">
+                <label class="form-label">Clase</label>
+                <div class="btn-group w-100" role="group">
+                  <input type="radio" class="btn-check" id="economy" value="economy"
+                         [checked]="seatClass() === 'economy'"
+                         (change)="changeClass('economy')">
+                  <label class="btn btn-outline-primary" for="economy">
+                    Económica - {{ flight()?.economyPrice | currency:'PEN':'symbol':'1.0-0' }}
+                  </label>
+
+                  <input type="radio" class="btn-check" id="business" value="business"
+                         [checked]="seatClass() === 'business'"
+                         (change)="changeClass('business')">
+                  <label class="btn btn-outline-success" for="business">
+                    Ejecutiva - {{ flight()?.businessPrice | currency:'PEN':'symbol':'1.0-0' }}
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Gráfico del avión -->
+          <div class="plane-graphic mb-4">
+            <div class="plane-cockpit mb-2 text-center">
+              <i class="bi bi-airplane fs-2 text-primary"></i>
+              <p class="mb-0 text-muted">Frente del avión</p>
+            </div>
+
+            <!-- Loading state -->
+            @if (loading()) {
+              <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Cargando asientos...</span>
+                </div>
+              </div>
+            } @else {
+              <!-- Filas de asientos -->
+              <div *ngFor="let row of seatRows(); let i = index" class="plane-row mb-2 d-flex align-items-center justify-content-center">
+                <span class="row-label me-3 fw-bold">{{ i + 1 }}</span>
+
+                <ng-container *ngFor="let seat of row; let j = index">
+                  <!-- Pasillo en el medio -->
+                  <div *ngIf="j === 3" class="aisle mx-2"></div>
+
+                  <button
+                    class="btn btn-sm me-1 seat-btn"
+                    [ngClass]="{
+                      'btn-warning': seat.class === 'business' && seat.status === 'available' && seatClass() === 'business',
+                      'btn-info': seat.class === 'economy' && seat.status === 'available' && seatClass() === 'economy',
+                      'btn-primary': selectedSeats().includes(seat.id),
+                      'btn-danger': seat.status === 'occupied',
+                      'btn-secondary': seat.status !== 'available' ||
+                                      (seat.class === 'business' && seatClass() !== 'business') ||
+                                      (seat.class === 'economy' && seatClass() !== 'economy')
+                    }"
+                    [class.border-3]="selectedSeats().includes(seat.id)"
+                    [class.shadow]="selectedSeats().includes(seat.id)"
+                    [disabled]="seat.status === 'occupied' ||
+                               (seat.class === 'business' && seatClass() !== 'business') ||
+                               (seat.class === 'economy' && seatClass() !== 'economy')"
+                    (click)="selectSeat(seat)"
+                    [title]="getSeatTooltip(seat)">
+                    {{ seat.id }}
+                  </button>
+                </ng-container>
+              </div>
+            }
+
+            <!-- Leyenda -->
+            <div class="plane-legend mt-4 text-center">
+              <span class="badge bg-warning me-2">
+                <i class="bi bi-star-fill"></i> Ejecutiva
+              </span>
+              <span class="badge bg-info me-2">
+                <i class="bi bi-circle"></i> Económica
+              </span>
+              <span class="badge bg-primary me-2">
+                <i class="bi bi-check-circle"></i> Seleccionado
+              </span>
+              <span class="badge bg-danger me-2">
+                <i class="bi bi-x-circle"></i> Ocupado
+              </span>
+              <span class="badge bg-secondary">
+                <i class="bi bi-slash-circle"></i> No disponible
+              </span>
+            </div>
+          </div>
+
+          <!-- Información de selección -->
+          <div class="selection-info mb-4 p-3 bg-light rounded">
+            <div class="row">
+              <div class="col-md-6">
+                <strong>Pasajeros:</strong> {{ passengers().length || 1 }}<br>
+                <strong>Clase seleccionada:</strong>
+                <span class="badge"
+                      [ngClass]="seatClass() === 'business' ? 'bg-success' : 'bg-primary'">
+                  {{ seatClass() === 'business' ? 'Ejecutiva' : 'Económica' }}
+                </span>
+              </div>
+              <div class="col-md-6">
+                <strong>Asientos seleccionados:</strong><br>
+                @if (selectedSeats().length > 0) {
+                  <div class="mt-1">
+                    @for (seat of selectedSeats(); track seat) {
+                      <span class="badge bg-primary me-1">{{ seat }}</span>
+                    }
+                  </div>
+                  <small class="text-muted">
+                    {{ selectedSeats().length }} de {{ passengers().length || 1 }} seleccionados
+                  </small>
+                } @else {
+                  <span class="text-muted">Ninguno</span>
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Precio total -->
+          @if (flight() && selectedSeats().length > 0) {
+            <div class="price-info mb-4 p-3 bg-success bg-opacity-10 rounded text-center">
+              <h5 class="mb-0">
+                Total:
+                <span class="text-success fw-bold">
+                  {{ getTotalPrice() | currency:'PEN':'symbol':'1.0-0' }}
+                </span>
+              </h5>
+            </div>
+          }
+
+          <!-- Botones de acción -->
+          <div class="actions">
+            @if (selectedSeats().length === (passengers().length || 1)) {
+              <button
+                class="btn btn-success w-100"
+                [disabled]="loading()"
+                (click)="confirmReservation()">
+                @if (loading()) {
+                  <span class="spinner-border spinner-border-sm me-2"></span>
+                }
+                <i class="bi bi-check-circle"></i> Confirmar Reserva
+              </button>
+            } @else {
+              <button class="btn btn-outline-success w-100" disabled>
+                <i class="bi bi-exclamation-circle"></i>
+                Selecciona {{ (passengers().length || 1) - selectedSeats().length }} asiento(s) más
+              </button>
+            }
+
+            <button class="btn btn-outline-secondary w-100 mt-2" (click)="goBack()">
+              <i class="bi bi-arrow-left"></i> Volver
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,113 @@
+<div class="login-container">
+  <div class="login-background"></div>
+
+  <div class="container">
+    <div class="row justify-content-center align-items-center min-vh-100">
+      <div class="col-lg-5 col-md-7 col-sm-9">
+
+        <!-- Card Principal -->
+        <div class="card login-card shadow-lg border-0">
+          <div class="card-body p-5">
+
+            <!-- Header con Logo -->
+            <div class="text-center mb-4">
+              <div class="login-logo">
+                <i class="bi bi-airplane-fill text-primary"></i>
+              </div>
+              <h2 class="login-title">¡Bienvenido!</h2>
+              <p class="login-subtitle">Inicia sesión para continuar</p>
+            </div>
+
+            <!-- Formulario -->
+            <form [formGroup]="loginForm" (ngSubmit)="login()" class="login-form">
+
+              <!-- Campo Usuario -->
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  id="username"
+                  class="form-control modern-input"
+                  formControlName="username"
+                  placeholder="Usuario"
+                  [class.is-invalid]="loginForm.get('username')?.invalid && loginForm.get('username')?.touched"
+                  required>
+                <label for="username">
+                  <i class="bi bi-person me-2"></i>Usuario
+                </label>
+                <div class="invalid-feedback">
+                  Por favor ingresa tu usuario
+                </div>
+              </div>
+
+              <!-- Campo Contraseña -->
+              <div class="form-floating mb-4">
+                <input
+                  [type]="showPassword ? 'text' : 'password'"
+                  id="password"
+                  class="form-control modern-input"
+                  formControlName="password"
+                  placeholder="Contraseña"
+                  [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+                  required>
+                <label for="password">
+                  <i class="bi bi-lock me-2"></i>Contraseña
+                </label>
+
+                <!-- Botón mostrar/ocultar contraseña -->
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary password-toggle"
+                  (click)="togglePassword()">
+                  <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+                </button>
+
+                <div class="invalid-feedback">
+                  Por favor ingresa tu contraseña
+                </div>
+              </div>
+
+              <!-- Botón de Login -->
+              <div class="d-grid mb-3">
+                <button
+                  type="submit"
+                  class="btn btn-primary btn-modern"
+                  [disabled]="loginForm.invalid || loading"
+                  [class.loading]="loading">
+
+                  @if (loading) {
+                    <div class="spinner-border spinner-border-sm me-2" role="status">
+                      <span class="visually-hidden">Cargando...</span>
+                    </div>
+                    Ingresando...
+                  } @else {
+                    <i class="bi bi-box-arrow-in-right me-2"></i>
+                    Iniciar Sesión
+                  }
+                </button>
+              </div>
+
+              <!-- Error Message -->
+              @if (error) {
+                <div class="alert alert-danger alert-modern" role="alert">
+                  <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                  {{ error }}
+                </div>
+              }
+
+            </form>
+
+            <!-- Footer del Card -->
+            <div class="text-center mt-4">
+              <p class="text-muted mb-2">¿No tienes cuenta?</p>
+              <a href="/auth/register" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-person-plus me-2"></i>Crear cuenta
+              </a>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

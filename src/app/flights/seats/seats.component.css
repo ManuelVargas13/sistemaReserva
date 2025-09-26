@@ -1,0 +1,85 @@
+.plane-graphic {
+  margin: 32px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #e3f2fd;
+  border-radius: 16px;
+  padding: 24px 0 16px 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.plane-cockpit {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+.plane-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.business-row {
+  background: #ffe0b2;
+}
+.economy-row {
+  background: #fffde7;
+}
+.row-label {
+  width: 32px;
+  text-align: right;
+  margin-right: 8px;
+  font-weight: bold;
+}
+button[mat-button] {
+  min-width: 40px;
+  margin: 0 2px;
+  border-radius: 8px;
+}
+.business-seat {
+  background: #ffb300 !important;
+  color: #fff !important;
+}
+.economy-seat {
+  background: #aed581 !important;
+  color: #222 !important;
+}
+.selected-seat {
+  background: #1976d2 !important;
+  color: #fff !important;
+}
+.occupied-seat {
+  background: #d32f2f !important;
+  color: #fff !important;
+}
+.plane-legend {
+  margin-top: 16px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.legend {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  margin-right: 4px;
+}
+.legend.business-seat {
+  background: #ffb300;
+}
+.legend.economy-seat {
+  background: #aed581;
+}
+.legend.selected-seat {
+  background: #1976d2;
+}
+.legend.occupied-seat {
+  background: #d32f2f;
+}
+.actions {
+  margin-top: 24px;
+  text-align: right;
+}
+.flight-info {
+  margin-bottom: 16px;
+}
